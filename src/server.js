@@ -1,14 +1,23 @@
 /* eslint-disable linebreak-style */
 const Hapi = require('@hapi/hapi');
 //const routes = require('./routes');
+// notes
 const notes = require('./api/notes');
-const NotesService = require('./services/inMemory/NotesService');
+const NotesService = require('./services/postgres/NotesService');
 const NotesValidator = require('../validator/notes');
+
+// users
+const users = require('./api/users');
+const UsersService = require('./services/postgres/UsersService');
+const UsersValidator = require('./validator/users');
+
 const ClientError = require('./exceptions/ClientError');
 require('dotenv').config();
 
 const init = async () => {
   const notesService = new NotesService();
+  const usersService = new UsersService();
+
   const server = Hapi.server(
     {
       // port: 5000,
@@ -31,7 +40,15 @@ const init = async () => {
       service: notesService,
       validator: NotesValidator,
     },
-  });
+  },
+  {
+    plugin: users,
+    options: {
+      service: usersService,
+      validator: UsersValidator,
+    },
+  },
+);
 
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
