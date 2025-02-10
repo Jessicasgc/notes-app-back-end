@@ -22,11 +22,7 @@ class UsersHandler {
       response.code(201);
       return response;
   }
-  async getUserByIdHandler(request, h) {
-    const { id } = request.params;
-    const user = await this._service.getUserById(id);
-  }
-  async getUserByIdHandler(request, h) {
+  async getUserByIdHandler(request) {
     const { id } = request.params;
  
     const user = await this._service.getUserById(id);
