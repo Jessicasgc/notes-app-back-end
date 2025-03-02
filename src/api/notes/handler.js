@@ -27,7 +27,7 @@ class NotesHandler{
       return response;
 
     }
-    async getNotesHandler() {
+    async getNotesHandler(request) {
         const { id: credentialId } = request.auth.credentials;
         const notes = await this._service.getNotes(credentialId);
         return {
@@ -67,6 +67,9 @@ class NotesHandler{
     }
     async deleteNoteByIdHandler(request, h) {
         const { id } = request.params;
+        const { id: credentialId } = request.auth.credentials;
+
+        await this._service.verifyNoteOwner(id, credentialId);
         await this._service.deleteNoteById(id);
         return {
             status: 'success',
